@@ -3,11 +3,10 @@ package utilidades;
 import modelos.Empresa;
 import modelos.Empleado;
 import modelos.TipoContrato;
+import modelos.TipoEmpresa;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.List;
+
+import java.util.*;
 
 public class UtilidadesEmpresa {
 
@@ -64,5 +63,71 @@ public class UtilidadesEmpresa {
         }
         empleados.sort(Comparator.comparing(salarios -> salarios.getContrato().getSalarioBase()));
         return empleados.get(0);
+    }
+
+    //3A
+    public static Map<TipoEmpresa, Integer>
+    getNumEmpresasPorTipo(List<Empresa> empresas){
+        Map<TipoEmpresa, Integer> numEmpresas = new HashMap<>();
+
+        for (Empresa empresa : empresas) {
+            TipoEmpresa tipo = empresa.getTipoEmpresa();
+
+            numEmpresas.put(tipo, numEmpresas.getOrDefault(tipo, 0) + 1);
+        }
+        return numEmpresas;
+    }
+
+    //3B
+    public static Map<TipoEmpresa,Integer>
+    getNumEmpleadosPorTipoEmpresa(List<Empresa> empresas){
+        Map<TipoEmpresa, Integer> mapaNumEmpleados = new HashMap<>();
+
+        for (Empresa empresa : empresas) {
+            TipoEmpresa tipo = empresa.getTipoEmpresa();
+            int numEmpleados = empresa.getEmpleado().size();
+
+            mapaNumEmpleados.put(tipo, mapaNumEmpleados.getOrDefault(tipo, 0) + numEmpleados);
+
+        }
+        return mapaNumEmpleados;
+    }
+
+    //3C
+    public static Map<TipoContrato, List<Empleado>>
+    getEmpleadosPorTipoContrato(Empresa empresas){
+        Map<TipoContrato, List<Empleado>> mapaTipoContrato  = new HashMap<>();
+
+        for (Empleado e : empresas.getEmpleado()) {
+            TipoContrato tipoContrato = e.getContrato().getTipoContrato();
+
+            if (!mapaTipoContrato.containsKey(tipoContrato)) {
+                mapaTipoContrato.put(tipoContrato, new ArrayList<>());
+            }
+            mapaTipoContrato.get(tipoContrato).add(e);
+        }
+
+        return mapaTipoContrato;
+    }
+
+    //3D
+    public static Map<Empresa, Map<TipoContrato, List<Empleado>>>
+    getEmpleadosPorTipoContrato(List<Empresa> empresas){
+        Map<Empresa, Map<TipoContrato, List<Empleado>>> mapaEmpresas = new HashMap<>();
+
+        for (Empresa empresa : empresas) {
+            Map<TipoContrato, List<Empleado>> mapaTipoContrato = new HashMap<>();
+
+            for (Empleado e : empresa.getEmpleado()) {
+                TipoContrato tipoContrato = e.getContrato().getTipoContrato();
+
+                if (!mapaTipoContrato.containsKey(tipoContrato)) {
+                    mapaTipoContrato.put(tipoContrato, new ArrayList<>());
+                }
+                mapaTipoContrato.get(tipoContrato).add(e);
+            }
+            mapaEmpresas.put(empresa, mapaTipoContrato);
+        }
+        return mapaEmpresas;
     }
 }
